@@ -1,0 +1,9 @@
+../Core/Src/User/driver_lis3mdl.c:224:13:Driver_Lis3mdl_WriteData	16	static
+../Core/Src/User/driver_lis3mdl.c:234:13:Driver_Lis3mdl_WriteReg	16	static
+../Core/Src/User/driver_lis3mdl.c:244:13:Driver_Lis3mdl_Read	32	static
+../Core/Src/User/driver_lis3mdl.c:254:13:Driver_Lis3mdl_InitCtrlReg	16	static
+../Core/Src/User/driver_lis3mdl.c:273:16:Utility_TwosCompToDec	24	static
+../Core/Src/User/driver_lis3mdl.c:294:13:Utility_DecToTwosComp	24	static
+../Core/Src/User/driver_lis3mdl.c:314:6:Driver_Lis3mdl_Init	16	static
+../Core/Src/User/driver_lis3mdl.c:324:6:Driver_Lis3mdl_ReadData	16	static
+../Core/Src/User/driver_lis3mdl.c:347:6:Driver_Lis3mdl_ExampleApp	16	static
