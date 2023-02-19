@@ -1,0 +1,6 @@
+	/* MANUAL CTRL REG SETUP
+	 Driver_Lis3mdl_WriteData(hspi, eDriverLis3mdlReg_CtrlReg2, 0x40);
+	 Driver_Lis3mdl_WriteData(hspi, eDriverLis3mdlReg_CtrlReg1, 0xFC);
+	 Driver_Lis3mdl_WriteData(hspi, eDriverLis3mdlReg_CtrlReg4, 0x0C);
+	 Driver_Lis3mdl_WriteData(hspi, eDriverLis3mdlReg_CtrlReg3, 0x00);
+	 */
