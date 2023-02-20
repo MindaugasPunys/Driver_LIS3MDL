@@ -1,6 +1,7 @@
-	/* MANUAL CTRL REG SETUP
-	 Driver_Lis3mdl_WriteData(hspi, eDriverLis3mdlReg_CtrlReg2, 0x40);
-	 Driver_Lis3mdl_WriteData(hspi, eDriverLis3mdlReg_CtrlReg1, 0xFC);
-	 Driver_Lis3mdl_WriteData(hspi, eDriverLis3mdlReg_CtrlReg4, 0x0C);
-	 Driver_Lis3mdl_WriteData(hspi, eDriverLis3mdlReg_CtrlReg3, 0x00);
-	 */
+Used HAL_SPI library.
+	Blocking driver using HAL_SPI_Transmit / HAL_SPI_Receive.
+	Non-blocking driver using HAL_SPI_Transmit_IT / HAL_SPI_Receive_IT / HAL_SPI_RxCpltCallback.
+
+No RTos was used.
+
+Driver_Lis3mdl_ExampleApp - Lights LED closest to magnet (strongest magnetic field).
