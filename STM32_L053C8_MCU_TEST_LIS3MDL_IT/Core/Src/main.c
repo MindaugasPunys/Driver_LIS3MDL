@@ -49,7 +49,7 @@ DMA_HandleTypeDef hdma_spi2_tx;
 TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN PV */
-sLis3mdl_DriverOut_t mag_sensor_data = { 0 };
+sDriverLis3mdl_SensorData_t mag_sensor_data = { 0 };
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -102,11 +102,18 @@ int main(void) {
 	/* USER CODE BEGIN WHILE */
 	while (1) {
 		HAL_Delay(10);
-//		Driver_Lis3mdl_ReadSensorData(&hspi2, &mag_sensor_data);
 
-		Driver_Lis3mdl_UpdateSensorData_IT(&hspi2);
-		mag_sensor_data = Driver_Lis3mdl_GetSensorData();
-		Driver_Lis3mdl_ExampleApp(&mag_sensor_data);
+		/* BLOCKING DRIVER */
+		if (Driver_Lis3mdl_ReadSensorData(&hspi2, &mag_sensor_data) == true) {
+			Driver_Lis3mdl_ExampleApp(&mag_sensor_data);
+		}
+
+		/* NON-BLOCKING DRIVER */
+//		if (Driver_Lis3mdl_UpdateSensorData_IT(&hspi2) == true) {
+//			mag_sensor_data = Driver_Lis3mdl_GetSensorData();
+//			Driver_Lis3mdl_ExampleApp(&mag_sensor_data);
+//		}
+
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
