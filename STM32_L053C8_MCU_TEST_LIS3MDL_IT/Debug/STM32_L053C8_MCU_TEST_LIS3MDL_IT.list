@@ -1236,6 +1236,7 @@ static bool Driver_Lis3mdl_WriteReg(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg_
  80009c0:	20000076 	.word	0x20000076
 
 080009c4 <Driver_Lis3mdl_Read>:
+
 static bool Driver_Lis3mdl_Read(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg_t reg, uint8_t *data) {
  80009c4:	b580      	push	{r7, lr}
  80009c6:	b084      	sub	sp, #16

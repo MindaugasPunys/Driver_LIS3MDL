@@ -223,7 +223,6 @@ static sDriverLis3mdl_RegLut_t lis3mdl_reg_LUT[eDriverLis3mdlReg_Last] = {
 };
 // @formatter:on
 static uint8_t spi_cmd = 0x00;
-//static uint8_t sensor_id = 0x00;
 
 // Default - Big endian
 static uint8_t lsb_index = 0;
@@ -272,6 +271,7 @@ static bool Driver_Lis3mdl_WriteReg(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg_
 	HAL_GPIO_WritePin(SS2_GPIO_Port, SS2_Pin, GPIO_PIN_SET);
 	return true;
 }
+
 static bool Driver_Lis3mdl_Read(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg_t reg, uint8_t *data) {
 	if (hspi == NULL || reg >= eDriverLis3mdlReg_Last || data == NULL) {
 		return false;
@@ -286,7 +286,6 @@ static bool Driver_Lis3mdl_Read(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg_t re
 	HAL_GPIO_WritePin(SS2_GPIO_Port, SS2_Pin, GPIO_PIN_SET);
 	return true;
 }
-
 static bool Driver_Lis3mdl_Read_IT(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg_t reg, uint8_t *data) {
 	if (hspi == NULL || reg >= eDriverLis3mdlReg_Last || data == NULL) {
 		return false;

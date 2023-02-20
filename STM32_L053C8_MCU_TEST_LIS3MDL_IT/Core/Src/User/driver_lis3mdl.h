@@ -23,6 +23,8 @@ typedef struct sDriverLis3mdl_SensorData_t {
 /*_____________________________________________________________________________________________________________________
  * Prototypes of exported functions */
 bool Driver_Lis3mdl_Init(SPI_HandleTypeDef *hspi);
+bool Driver_Lis3mdl_Deinit(SPI_HandleTypeDef *hspi);
+
 bool Driver_Lis3mdl_ReadSensorData(SPI_HandleTypeDef *hspi, sDriverLis3mdl_SensorData_t *sensor_data);
 
 bool Driver_Lis3mdl_UpdateSensorData_IT(SPI_HandleTypeDef *hspi);
