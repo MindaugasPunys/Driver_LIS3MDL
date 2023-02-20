@@ -22,9 +22,9 @@
 
 typedef struct sLis3mdl_DriverOut_t {
 	uint8_t status;
-	int16_t x;
-	int16_t y;
-	int16_t z;
+	float x;
+	float y;
+	float z;
 } sLis3mdl_DriverOut_t;
 
 /*_____________________________________________________________________________________________________________________
@@ -33,8 +33,11 @@ typedef struct sLis3mdl_DriverOut_t {
 /*_____________________________________________________________________________________________________________________
  * Prototypes of exported functions */
 bool Driver_Lis3mdl_Init(SPI_HandleTypeDef *hspi);
-bool Driver_Lis3mdl_ReadData(SPI_HandleTypeDef *hspi, sLis3mdl_DriverOut_t *sensor_data);
+bool Driver_Lis3mdl_ReadSensorData(SPI_HandleTypeDef *hspi, sLis3mdl_DriverOut_t *sensor_data);
 
-bool Driver_Lis3mdl_ExampleApp(SPI_HandleTypeDef *hspi, sLis3mdl_DriverOut_t *sensor_data);
+bool Driver_Lis3mdl_UpdateSensorData_IT(SPI_HandleTypeDef *hspi);
+sLis3mdl_DriverOut_t Driver_Lis3mdl_GetSensorData(void);
+
+bool Driver_Lis3mdl_ExampleApp(sLis3mdl_DriverOut_t *sensor_data);
 
 #endif /* USER_DRIVER_LIS3MDL_H_ */

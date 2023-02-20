@@ -61,8 +61,8 @@ all: main-build
 main-build: STM32_L053C8_MCU_TEST_LIS3MDL_IT.elf secondary-outputs
 
 # Tool invocations
-STM32_L053C8_MCU_TEST_LIS3MDL_IT.elf STM32_L053C8_MCU_TEST_LIS3MDL_IT.map: $(OBJS) $(USER_OBJS) D:\STM\Workspace\STM32_L053C8_MCU_TEST_LIS3MDL_IT\STM32L053C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "STM32_L053C8_MCU_TEST_LIS3MDL_IT.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"D:\STM\Workspace\STM32_L053C8_MCU_TEST_LIS3MDL_IT\STM32L053C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32_L053C8_MCU_TEST_LIS3MDL_IT.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+STM32_L053C8_MCU_TEST_LIS3MDL_IT.elf STM32_L053C8_MCU_TEST_LIS3MDL_IT.map: $(OBJS) $(USER_OBJS) D:\STM\Workspace\Driver_LIS3MDL\STM32_L053C8_MCU_TEST_LIS3MDL_IT\STM32L053C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "STM32_L053C8_MCU_TEST_LIS3MDL_IT.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"D:\STM\Workspace\Driver_LIS3MDL\STM32_L053C8_MCU_TEST_LIS3MDL_IT\STM32L053C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32_L053C8_MCU_TEST_LIS3MDL_IT.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
