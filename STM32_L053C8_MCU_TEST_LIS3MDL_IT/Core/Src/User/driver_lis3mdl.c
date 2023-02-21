@@ -224,7 +224,7 @@ static sDriverLis3mdl_RegLut_t lis3mdl_reg_LUT[eDriverLis3mdlReg_Last] = {
 // @formatter:on
 static uint8_t spi_cmd = 0x00;
 
-// Default - Big endian
+// Default - big endian
 static uint8_t lsb_index = 0;
 static uint8_t msb_index = 1;
 static uint8_t reg_buffer[2] = { 0 };
@@ -244,6 +244,8 @@ static int16_t Utility_TwosCompToDec(uint8_t msb, uint8_t lsb);
 static bool Utility_DecToTwosComp(int16_t decimalValue, uint8_t *msb, uint8_t *lsb);
 /*_____________________________________________________________________________________________________________________
  * Definitions of private functions */
+
+/* BLOCKING FUNCTIONALITY */
 static bool Driver_Lis3mdl_WriteData(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg_t reg, uint8_t data) {
 	if (hspi == NULL || reg >= eDriverLis3mdlReg_Last) {
 		return false;
@@ -251,10 +253,14 @@ static bool Driver_Lis3mdl_WriteData(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg
 	HAL_GPIO_WritePin(SS2_GPIO_Port, SS2_Pin, GPIO_PIN_RESET);
 
 	spi_cmd = SPI_WRITE | lis3mdl_reg_LUT[reg].address;
-	status = HAL_SPI_Transmit(hspi, &spi_cmd, 1, 100);
-	status = HAL_SPI_Transmit(hspi, &data, 1, 100);
+	if (HAL_SPI_Transmit(hspi, &spi_cmd, 1, 100) == HAL_OK) {
+		status = HAL_SPI_Transmit(hspi, &data, 1, 100);
+	}
 
 	HAL_GPIO_WritePin(SS2_GPIO_Port, SS2_Pin, GPIO_PIN_SET);
+	if (status != HAL_OK) {
+		return false;
+	}
 	return true;
 }
 static bool Driver_Lis3mdl_WriteReg(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg_t reg) {
@@ -265,13 +271,16 @@ static bool Driver_Lis3mdl_WriteReg(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg_
 	HAL_GPIO_WritePin(SS2_GPIO_Port, SS2_Pin, GPIO_PIN_RESET);
 
 	spi_cmd = SPI_WRITE | lis3mdl_reg_LUT[reg].address;
-	status = HAL_SPI_Transmit(hspi, &spi_cmd, 1, 100);
-	status = HAL_SPI_Transmit(hspi, &lis3mdl_reg_LUT[reg].reg_data, 1, 100);
+	if (HAL_SPI_Transmit(hspi, &spi_cmd, 1, 100) == HAL_OK) {
+		status = HAL_SPI_Transmit(hspi, &lis3mdl_reg_LUT[reg].reg_data, 1, 100);
+	}
 
 	HAL_GPIO_WritePin(SS2_GPIO_Port, SS2_Pin, GPIO_PIN_SET);
+	if (status != HAL_OK) {
+		return false;
+	}
 	return true;
 }
-
 static bool Driver_Lis3mdl_Read(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg_t reg, uint8_t *data) {
 	if (hspi == NULL || reg >= eDriverLis3mdlReg_Last || data == NULL) {
 		return false;
@@ -280,12 +289,17 @@ static bool Driver_Lis3mdl_Read(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg_t re
 	HAL_GPIO_WritePin(SS2_GPIO_Port, SS2_Pin, GPIO_PIN_RESET);
 
 	spi_cmd = SPI_READ | lis3mdl_reg_LUT[reg].address;
-	status = HAL_SPI_Transmit(hspi, &spi_cmd, 1, 100);
-	status = HAL_SPI_Receive(hspi, data, 1, 100);
+	if (HAL_SPI_Transmit(hspi, &spi_cmd, 1, 100) == HAL_OK) {
+		status = HAL_SPI_Receive(hspi, data, 1, 100);
+	}
 
 	HAL_GPIO_WritePin(SS2_GPIO_Port, SS2_Pin, GPIO_PIN_SET);
+	if (status != HAL_OK) {
+		return false;
+	}
 	return true;
 }
+/* NON-BLOCKING FUNCTIONALITY */
 static bool Driver_Lis3mdl_Read_IT(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg_t reg, uint8_t *data) {
 	if (hspi == NULL || reg >= eDriverLis3mdlReg_Last || data == NULL) {
 		return false;
@@ -299,6 +313,9 @@ static bool Driver_Lis3mdl_Read_IT(SPI_HandleTypeDef *hspi, eDriverLis3mdl_Reg_t
 	recieve_flag = true;
 
 	HAL_GPIO_WritePin(SS2_GPIO_Port, SS2_Pin, GPIO_PIN_SET);
+	if (status != HAL_OK) {
+		return false;
+	}
 	return true;
 }
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {
@@ -306,6 +323,8 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {
 	recieve_flag = false;
 }
 
+/* Initiate Control registers with defined parameters.
+ * Define parameters before calling this function */
 static bool Driver_Lis3mdl_InitCtrlReg(SPI_HandleTypeDef *hspi) {
 	if (hspi == NULL) {
 		return false;
@@ -339,6 +358,7 @@ static bool Driver_Lis3mdl_InitCtrlReg(SPI_HandleTypeDef *hspi) {
 
 	return true;
 }
+/* Converts INT_16 to selected Gaus scale */
 static float Driver_Lis3mdl_ToGausScale(int16_t data) {
 	switch (sensor_config.full_scale) {
 		case (eDriverLis3mdl_Scale_4G): {
@@ -359,6 +379,8 @@ static float Driver_Lis3mdl_ToGausScale(int16_t data) {
 	}
 }
 
+/* Returns INT_16 from two UINT_8 variables using two's complements conversion
+ * Changing MSB with LSB places changes endian */
 static int16_t Utility_TwosCompToDec(uint8_t msb, uint8_t lsb) {
 	int16_t result = 0;
 	int16_t sign = msb & 0x80 ? -1 : 1; // Check the sign bit of the MSB
@@ -380,6 +402,7 @@ static int16_t Utility_TwosCompToDec(uint8_t msb, uint8_t lsb) {
 
 	return result;
 }
+/* Return two UINT_8 two's compliments from INT_16 */
 static bool Utility_DecToTwosComp(int16_t decimalValue, uint8_t *msb, uint8_t *lsb) {
 	*msb = (uint8_t) ((decimalValue >> 8) & 0xFF);  // Extract high byte
 	*lsb = (uint8_t) (decimalValue & 0xFF);  // Extract low byte
@@ -436,7 +459,7 @@ bool Driver_Lis3mdl_Deinit(SPI_HandleTypeDef *hspi) {
 	driver_state = eDriverLis3mdl_State_Setup;
 	return true;
 }
-
+/* BLOCKING FUNCTIONALITY */
 bool Driver_Lis3mdl_ReadSensorData(SPI_HandleTypeDef *hspi, sDriverLis3mdl_SensorData_t *sensor_data) {
 	if (hspi == NULL || sensor_data == NULL) {
 		return false;
@@ -468,7 +491,8 @@ bool Driver_Lis3mdl_ReadSensorData(SPI_HandleTypeDef *hspi, sDriverLis3mdl_Senso
 
 	return true;
 }
-
+/* NON-BLOCKING FUNCTIONALITY */
+/* Call as a routine to update sensor data */
 bool Driver_Lis3mdl_UpdateSensorData_IT(SPI_HandleTypeDef *hspi) {
 	if (hspi == NULL) {
 		return false;
@@ -541,10 +565,12 @@ bool Driver_Lis3mdl_UpdateSensorData_IT(SPI_HandleTypeDef *hspi) {
 	}
 	return true;
 }
+/* Retrieve updated sensor data */
 sDriverLis3mdl_SensorData_t Driver_Lis3mdl_GetSensorData(void) {
 	return local_sensor_data;
 }
 
+/* Test App */
 bool Driver_Lis3mdl_ExampleApp(sDriverLis3mdl_SensorData_t *sensor_data) {
 	if (sensor_data == NULL) {
 		return false;
